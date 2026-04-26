@@ -4,31 +4,19 @@ pipeline {
 
     stages {
 
-        stage('Build') {
+        stage('Build Docker Image') {
 
             steps {
 
-                sh 'echo "Building application"'
-
-                sh 'pwd'
+                sh 'docker build -t my-nginx-app .'
             }
         }
 
-        stage('Test') {
+        stage('Check Images') {
 
             steps {
 
-                sh 'echo "Running tests"'
-
-                sh 'date'
-            }
-        }
-
-        stage('Deploy') {
-
-            steps {
-
-                sh 'echo "Deploying application"'
+                sh 'docker images'
             }
         }
     }
