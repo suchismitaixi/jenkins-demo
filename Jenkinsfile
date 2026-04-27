@@ -5,26 +5,31 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t my-nginx-app .'
+                sh 'docker build -t my-nginx-app:latest .'
             }
         }
 
-        stage('Stop Old Container') {
+        stage('Load Image into Minikube') {
             steps {
-                sh 'docker stop my-nginx-container || true'
-                sh 'docker rm my-nginx-container || true'
+                sh 'minikube image load my-nginx-app:latest'
             }
         }
 
-        stage('Run New Container') {
+        stage('Deploy to Kubernetes') {
             steps {
-                sh 'docker run -d -p 8081:80 --name my-nginx-container my-nginx-app'
+                sh 'kubectl apply -f k8s-deployment.yaml'
             }
         }
 
-        stage('Check Running Containers') {
+        stage('Restart Deployment') {
             steps {
-                sh 'docker ps'
+                sh 'kubectl rollout restart deployment my-nginx-deployment'
+            }
+        }
+
+        stage('Check Pods') {
+            steps {
+                sh 'kubectl get pods'
             }
         }
     }
