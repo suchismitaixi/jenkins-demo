@@ -9,12 +9,6 @@ pipeline {
             }
         }
 
-        stage('Load Image into Minikube') {
-            steps {
-                sh 'minikube image load my-nginx-app:latest'
-            }
-        }
-
         stage('Deploy to Kubernetes') {
             steps {
                 sh 'kubectl apply -f k8s-deployment.yaml'
